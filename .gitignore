@@ -340,3 +340,5 @@ cython_debug/
 bot.db
 .env
 .replit
+poetry.lock
+pyproject.toml
