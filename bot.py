@@ -123,6 +123,15 @@ async def on_member_join(member):
             new_user(member.id, member.guild.id)
         elif user_prev_verify[4] == 0:
             await member.send(verify_msg(member.guild, check_on_join[1]))
+        elif user_prev_verify[4] == 1:
+            role = discord.utils.get(member.guild.roles, name=check_on_join[3])
+            if role:
+                if role not in member.roles:
+                    await member.add_roles(role)
+            else:
+                await member.guild.create_role(name=check_on_join[3])
+                role = discord.utils.get(member.guild.roles, name=check_on_join[3])
+                await member.add_roles(role)
 
 @client.event
 async def on_message(message):
