@@ -6,6 +6,7 @@ import os
 import random
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+from keep_alive import keep_alive
 
 conn = sqlite3.connect('bot.db')
 c = conn.cursor()
@@ -297,4 +298,5 @@ async def verify(ctx):
         elif user_prev_verify[4] == 0:
             await ctx.author.send(verify_msg(ctx.guild, check_on_join[1]))
 
+keep_alive()
 client.run(os.environ.get('DISCORD_TOKEN'))
