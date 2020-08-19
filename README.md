@@ -4,7 +4,7 @@
 
 ![Discord](https://img.shields.io/discord/731028346569228288)
 
-> EmailBot allows you to verify that your Discord server members have an email address with a specific domain.
+**EmailBot** allows you to verify that your Discord server members have an email address with a specific domain.
 
 > Invite: https://discord.com/api/oauth2/authorize?client_id=731027450607435846&permissions=268503040&scope=bot
 
