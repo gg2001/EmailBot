@@ -8,7 +8,7 @@ Discord server: https://discord.gg/MfFMxu9
 
 ## How to use
 
-A domain must be added using `.dominadd` for this bot to work.
+A domain must be added using `.dominadd domain` for this bot to work. `.vstatus` is the help command.
 
 ```
 User commands: 
