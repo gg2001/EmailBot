@@ -342,3 +342,4 @@ bot.db
 .replit
 poetry.lock
 pyproject.toml
+dump.sql
