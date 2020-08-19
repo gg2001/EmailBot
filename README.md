@@ -18,7 +18,7 @@ Let's say you want a Discord server just for people who have a @randomuniversity
 
 ## Usage
 
-After inviting the bot to your server, a domain must be added using `.dominadd domain`. `.vstatus` is the help command:
+After [inviting](https://discord.com/api/oauth2/authorize?client_id=731027450607435846&permissions=268503040&scope=bot) the bot to your server, a domain must be added using `.dominadd domain`. `.vstatus` is the help command:
 
 ```
 User commands: 
@@ -47,7 +47,7 @@ Install the dependencies:
 pip install -r requirements.txt
 ```
 
-Before running it make sure these environment variables are set:
+Before running it make sure these environment variables are set. You will need a [Sendgrid](https://sendgrid.com/docs/for-developers/sending-email/api-getting-started/) and [Discord](https://discordpy.readthedocs.io/en/latest/discord.html#discord-intro) account (both are free):
 
 ```
 export SENDGRID_API_KEY='YOUR_SENDGRID_API_KEY'
