@@ -5,9 +5,10 @@
 > EmailBot allows you to verify that your Discord server members have an email address with a specific domain.
 
 > Invite: https://discord.com/api/oauth2/authorize?client_id=731027450607435846&permissions=268503040&scope=bot
+
 > Discord server: https://discord.gg/MfFMxu9
 
-Let's say you want to create a Discord server just for people who have a @randomuniversity.edu email address. Add this bot to your server and whenever someone joins, they will get a DM asking for their @randomuniversity.edu email address. Then the bot emails them a verification code. If they reply with the correct code, they get the "Verified" role. You can have channels that only allow verified users to ensure that non verified users can't participate.
+Let's say you want  a Discord server just for people who have a @randomuniversity.edu email address. Add this bot to your server and whenever someone joins, they will get a DM asking for their @randomuniversity.edu email address. Then, the bot emails them a verification code. If they reply with the correct code, they get the "Verified" role. You can have channels that only allow verified users to ensure that non verified users can't participate.
 
 ## How to use
 
