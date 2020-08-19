@@ -2,7 +2,7 @@
   <img src="docs/emailbot.png" />
 </p>
 
-![Discord](https://img.shields.io/discord/731028346569228288)
+[![Discord](https://img.shields.io/discord/731028346569228288)](https://discord.gg/MfFMxu9)
 
 **EmailBot** allows you to verify that your Discord server members have an email address with a specific domain.
 
