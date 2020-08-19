@@ -10,7 +10,8 @@ Discord server: https://discord.gg/MfFMxu9
 
 A domain must be added using `.dominadd` for this bot to work.
 
-```User commands: 
+```
+User commands: 
    .verify -> Sends a DM to the user to verify their email
 
 Admin commands: 
@@ -25,16 +26,21 @@ Admin commands:
 
 Domains: 
 Verify when a user joins? (default=False): False
-Verified role (default=Verified): Verified```
+Verified role (default=Verified): Verified
+```
 
 ## Install
 
 Before running it make sure these environment variables are set:
 
-```export SENDGRID_API_KEY=
+```
+export SENDGRID_API_KEY=
 export SENDGRID_EMAIL=
-export DISCORD_TOKEN=```
+export DISCORD_TOKEN=
+```
 
 Make sure the dependencies such as `discord`, `sendgrid`, `apscheduler` and `flask` are installed. Run the bot with:
 
-```python bot.py```
+```
+python bot.py
+```
