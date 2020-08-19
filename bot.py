@@ -110,7 +110,7 @@ client = commands.Bot(command_prefix = '.')
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
-    await client.change_presence(activity=discord.Game(name='.vstatus'))
+    await client.change_presence(activity=discord.Game(name='.vstatus | github.com/gg2001/EmailBot'))
 
 @client.event
 async def on_member_join(member):
@@ -287,16 +287,16 @@ async def vstatus(ctx):
         on_join = bool(check_on_join[2])
         await ctx.send("```" + 
             "User commands: " + "\n" +
-            "   .verify -> Sends a DM to the user to verify their email" + "\n\n" +
+            "   .verify -> Sends a DM to the user to verify their email" + "\n" +
+            "   .vstatus -> This help message" + "\n\n" +
             "Admin commands: " + "\n" +
-            "   .vstatus -> This help message" + "\n" +
+            " - A domain must be added before users can be verified." + "\n" +
+            " - Use .rolechange instead of server settings to change the name of the verified role." + "\n" +
             "   .enableonjoin -> Enables verifying users on join" + "\n" +
             "   .disableonjoin -> Disables verifying users on join" + "\n" +
             "   .domainadd domain -> Adds an email domain" + "\n" +
             "   .domainremove domain -> Removes an email domain" + "\n" +
-            "   .rolechange role -> Changes the name of the verified role" + "\n" +
-            " - A domain must be added before users can be verified." + "\n" +
-            " - Use .rolechange instead of server settings to change the name of the verified role." + "\n\n" +
+            "   .rolechange role -> Changes the name of the verified role" + "\n\n" +
             "Domains: " + check_on_join[1] + "\n" + 
             "Verify when a user joins? (default=False): " + str(on_join) + "\n" + 
             "Verified role (default=Verified): " + check_on_join[3] + "```")
