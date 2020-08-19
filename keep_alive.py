@@ -19,7 +19,7 @@ def backup_db():
     print("Sqlite3 Dumped")
 
 sched = BackgroundScheduler(daemon=True)
-sched.add_job(backup_db,'interval',minutes=1)
+sched.add_job(backup_db,'interval',minutes=30)
 sched.start()
 
 def run():
