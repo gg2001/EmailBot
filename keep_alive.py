@@ -9,14 +9,17 @@ app = Flask('')
 def home():
     return "EmailBot is running"
 
+def progress(status, remaining, total):
+    print(f'Copied {total-remaining} of {total} pages...')
+
 def backup_db():
-    conn = sqlite3.connect('bot.db')
-    c = conn.cursor()
-    with open('dump.sql', 'w') as f:
-        for line in conn.iterdump():
-            f.write('%s\n' % line)
-    conn.close()
-    print("Sqlite3 Dumped")
+    con = sqlite3.connect('bot.db')
+    bck = sqlite3.connect('backup.db')
+    with bck:
+        con.backup(bck, pages=1, progress=progress)
+    bck.close()
+    con.close()
+    print("Sqlite3 backed up")
 
 sched = BackgroundScheduler(daemon=True)
 sched.add_job(backup_db,'interval',minutes=30)

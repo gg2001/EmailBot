@@ -343,3 +343,4 @@ bot.db
 poetry.lock
 pyproject.toml
 dump.sql
+backup.db
