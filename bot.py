@@ -170,7 +170,14 @@ async def on_message(message):
     elif (len(message_content) == 6) and message_content.isdigit():
         verif_code = int(message_content)
         prev_codes_f = get_users_codes(message.author.id, verif_code)
-        prev_codes = [i for i in prev_codes_f if i[4] == 0]
+        prev_codes_g = [i for i in prev_codes_f if i[4] == 0]
+        prev_codes = []
+        for i in prev_codes_g:
+            user_emails = get_emails_guilds(i[1], i[2])
+            if len(user_emails) >= 1:
+                continue
+            else:
+                prev_codes.append(i)
         if len(prev_codes) >= 1:
             for i in prev_codes:
                 verify_user(message.author.id, i[1])
