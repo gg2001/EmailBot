@@ -2,13 +2,15 @@
   <img src="docs/emailbot.png" />
 </p>
 
-**EmailBot** allows you to verify that your Discord server members have an email address with a specific domain.
-
 [![Discord](https://img.shields.io/discord/731028346569228288)](https://discord.gg/MfFMxu9) [![License](https://img.shields.io/badge/license-GPL-brightgreen)](LICENSE)
+
+**EmailBot** allows you to verify that your Discord server members have an email address with a specific domain.
 
 > Invite: https://discord.com/api/oauth2/authorize?client_id=731027450607435846&permissions=268503040&scope=bot
 
 > Discord server: https://discord.gg/MfFMxu9
+
+## Example
 
 Let's say you want a Discord server just for people who have a @randomuniversity.edu email address. Add this bot to your server and when someone joins, they will get a DM asking for their @randomuniversity.edu email address. The bot then emails them a verification code. If they reply with the correct code, they get the "Verified" role.
 
