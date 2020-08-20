@@ -63,12 +63,12 @@ python bot.py
 
 ## Task list
 
-- [] Separate bot commands/events into cogs and put sqlite commands in a separate file
-- [] Make the flask server and scheduled sqlite backups optional
-- [] Allow roles with spaces to be added
-- [] Make the feature that allows users who leave to retain their Verified role when they join back, optional for the server admin
-- [] Add a `.unverify member` command
-- [] Use Role.id instead of Role.name
+- [ ] Separate bot commands/events into cogs and put sqlite commands in a separate file
+- [ ] Make the flask server and scheduled sqlite backups optional
+- [ ] Allow roles with spaces to be added
+- [ ] Make the feature that allows users who leave to retain their Verified role when they join back, optional for the server admin
+- [ ] Add a `.unverify member` command
+- [ ] Use Role.id instead of Role.name
 
 ## License
 
