@@ -74,4 +74,4 @@ python bot.py
 
 ## License
 
-EmailBot is licensed under [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.en.html).
+EmailBot is licensed under [GNU GPL v3](LICENSE).
