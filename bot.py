@@ -285,7 +285,8 @@ async def vstatus(ctx):
             new_guild(ctx.guild.id)
         check_on_join = get_guild(ctx.guild.id)
         on_join = bool(check_on_join[2])
-        await ctx.send("```" + 
+        await ctx.send("```" +
+            "Ping: " + "{0}ms".format(round(client.latency * 1000)) + "\n" +
             "User commands: " + "\n" +
             "   .verify -> Sends a DM to the user to verify their email" + "\n" +
             "   .vstatus -> This help message" + "\n\n" +
@@ -300,6 +301,10 @@ async def vstatus(ctx):
             "Domains: " + check_on_join[1] + "\n" + 
             "Verify when a user joins? (default=False): " + str(on_join) + "\n" + 
             "Verified role (default=Verified): " + check_on_join[3] + "```")
+
+@client.command()
+async def vping(ctx):
+    await ctx.send("{0}ms".format(round(client.latency * 1000)))
 
 @client.command()
 async def verify(ctx):
