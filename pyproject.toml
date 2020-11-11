@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "emailbot"
+version = "0.1.0"
+description = ""
+authors = ["gg2001 <gautham.gg@gmail.com>"]
+license = "MIT License"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+aiohttp = "3.6.2"
+APScheduler = "3.6.3"
+async-timeout = "3.0.1"
+attrs = "19.3.0"
+chardet = "3.0.4"
+click = "7.1.2"
+"discord.py" = "1.5.1"
+Flask = "1.1.2"
+idna = "2.10"
+itsdangerous = "1.1.0"
+Jinja2 = "2.11.2"
+MarkupSafe = "1.1.1"
+multidict = "4.7.6"
+python-http-client = "3.2.7"
+pytz = "2020.1"
+sendgrid = "6.4.5"
+six = "1.15.0"
+starkbank-ecdsa = "1.0.0"
+tzlocal = "2.1"
+Werkzeug = "1.0.1"
+yarl = "1.5.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
