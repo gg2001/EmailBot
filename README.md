@@ -10,6 +10,8 @@
 
 > Discord server: https://discord.gg/MfFMxu9
 
+IMPORTANT: The bot you invite via the link above has a 100 email per day limit since I am using the free version of the Sendgrid API. Due to a recent influx of new users this limit has been getting hit quite often. If this limit is reached you can wait a few hours before messaging your email to the bot again. If the limit is annoying, consider hosting the bot yourself. If you want you can tip me some crypto to cover the $15 per month Sendgrid plan, and I'll upgrade my account so it doesn't hit the limits (BTC: bc1q6w82amhdzp3hqe803cncdlnarvfd9es8xl0dpw, ETH: 0xF3ff2D5910C27192857b7DFBcf3Cf9678b89BfA0).
+
 ## Usage
 
 After [inviting](https://discord.com/api/oauth2/authorize?client_id=731027450607435846&permissions=268503040&scope=bot) the bot to your server, a domain must be added using `.dominadd domain`. `.vstatus` is the help command:
