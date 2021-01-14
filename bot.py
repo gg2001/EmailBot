@@ -175,7 +175,7 @@ async def on_message(message):
                     print(response.headers)
                     await message.channel.send("Email sent. **Reply here with your verification code**. If you haven't received it, check your spam folder.")
                 except Exception as e:
-                    await message.channel.send("Email failed to send.")
+                    await message.channel.send("Please send your email again in a few hours. The bot has hit its 100 email per day limit.")
             else:
                 await message.channel.send("Invalid email.")
         else:
