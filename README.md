@@ -49,12 +49,14 @@ Install the dependencies:
 pip install -r requirements.txt
 ```
 
-Before running it make sure these environment variables are set. You will need a [Sendgrid](https://sendgrid.com/docs/for-developers/sending-email/api-getting-started/) and [Discord](https://discordpy.readthedocs.io/en/latest/discord.html#discord-intro) account (both are free):
+Before running it make sure these environment variables are set. You will need a [Sendgrid](https://sendgrid.com/docs/for-developers/sending-email/api-getting-started/) and [Discord](https://discordpy.readthedocs.io/en/latest/discord.html#discord-intro) account (both are free). Optionally consider making a [Mailgun](https://documentation.mailgun.com/en/latest/quickstart-sending.html#how-to-start-sending-email) account, since this bot uses Mailgun when Sendgrid fails to send an email:
 
 ```
 export SENDGRID_API_KEY='YOUR_SENDGRID_API_KEY'
 export SENDGRID_EMAIL='YOUR_SENDGRID_EMAIL'
 export DISCORD_TOKEN='YOUR_DISCORD_TOKEN'
+export MAILGUN_API_KEY='YOUR_MAILGUN_API_KEY'
+export MAILGUN_DOMAIN='YOUR_MAILGUN_DOMAIN'
 ```
 
 Run the bot with:
