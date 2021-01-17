@@ -6,6 +6,7 @@ import os
 import random
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+import requests
 from keep_alive import keep_alive
 
 conn = sqlite3.connect('bot.db')
@@ -105,6 +106,15 @@ def email_check(email):
     else:
         return False
 
+def mailgun_send(email_address, verification_code):
+	return requests.post(
+		"https://api.mailgun.net/v3/{}/messages".format(os.environ.get('MAILGUN_DOMAIN')),
+		auth=("api", os.environ.get('MAILGUN_API_KEY')),
+		data={"from": "EmailBot <mailgun@{}>".format(os.environ.get('MAILGUN_DOMAIN')),
+			"to": email_address,
+			"subject": "Verify your server email",
+			"text": str(verification_code)})
+
 intents = discord.Intents.default()
 intents.members = True
 
@@ -175,7 +185,11 @@ async def on_message(message):
                     print(response.headers)
                     await message.channel.send("Email sent. **Reply here with your verification code**. If you haven't received it, check your spam folder.")
                 except Exception as e:
-                    await message.channel.send("Please send your email again in a few hours. The bot has hit its 100 email per day limit.")
+                    mailgun_email = mailgun_send(message_content, random_code)
+                    if mailgun_email.status_code == 200:
+                        await message.channel.send("Email sent. **Reply here with your verification code**. If you haven't received it, check your spam folder.")
+                    else:
+                        await message.channel.send("Email failed to send.")
             else:
                 await message.channel.send("Invalid email.")
         else:
