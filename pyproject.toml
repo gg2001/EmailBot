@@ -28,6 +28,16 @@ starkbank-ecdsa = "1.0.0"
 tzlocal = "2.1"
 Werkzeug = "1.0.1"
 yarl = "1.5.1"
+astroid = "2.4.2"
+certifi = "2020.12.5"
+isort = "4.3.21"
+lazy-object-proxy = "1.4.3"
+mccabe = "0.6.1"
+pylint = "2.5.3"
+requests = "2.25.1"
+toml = "0.10.1"
+urllib3 = "1.26.2"
+wrapt = "1.12.1"
 
 [tool.poetry.dev-dependencies]
 
