@@ -51,12 +51,18 @@ pip install -r requirements.txt
 
 Before running it make sure these environment variables are set. You will need a [Sendgrid](https://sendgrid.com/docs/for-developers/sending-email/api-getting-started/) and [Discord](https://discordpy.readthedocs.io/en/latest/discord.html#discord-intro) account (both are free). Optionally consider making a [Mailgun](https://documentation.mailgun.com/en/latest/quickstart-sending.html#how-to-start-sending-email) account, since this bot uses Mailgun when Sendgrid fails to send an email:
 
+SMTP will be used first, if failed, Sendgrid, if failed again, Mailgun. Set SMTP_USE_STARTTLS to 'true' if using STARTTLS
 ```
 export SENDGRID_API_KEY='YOUR_SENDGRID_API_KEY'
 export SENDGRID_EMAIL='YOUR_SENDGRID_EMAIL'
 export DISCORD_TOKEN='YOUR_DISCORD_TOKEN'
 export MAILGUN_API_KEY='YOUR_MAILGUN_API_KEY'
 export MAILGUN_DOMAIN='YOUR_MAILGUN_DOMAIN'
+export 'SMTP_USER'='YOUR_SMTP_EMAIL_ADDRESS'
+export 'SMTP_SERVER'='YOUR_SMTP_SERVER'
+export 'SMTP_PORT'='YOUR_SMTP_SERVER_PORT'
+export 'SMTP_PASSWORD'='YOUR_SMTP_PASSWORD'
+export 'SMTP_USE_STARTTLS'='true'
 ```
 
 Run the bot with:

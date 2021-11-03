@@ -9,6 +9,8 @@ from sendgrid.helpers.mail import Mail
 import requests
 from keep_alive import keep_alive
 import fnmatch
+import smtplib
+from email.mime.text import MIMEText
 
 conn = sqlite3.connect('bot.db')
 c = conn.cursor()
@@ -122,6 +124,23 @@ def domain_wildcard_match(domain_to_verify, domains_allowed):
             return True
     return False
 
+def smtp_send(email_address, verification_code):
+    user_email = os.environ.get('SMTP_USER')
+    smtp_server = os.environ.get('SMTP_SERVER')
+    smtp_port = os.environ.get('SMTP_PORT')
+    smtp_pswd = os.environ.get('SMTP_PASSWORD')
+    smtp_use_starttls = os.environ.get('SMTP_USE_STARTTLS') == 'true'
+    with smtplib.SMTP(smtp_server,smtp_port) as sv:
+        if smtp_use_starttls:
+            sv.starttls()
+        sv.login(user_email, smtp_pswd)
+        receiver = email_address
+        msg = MIMEText(f'Your verification code is {verification_code}. Please reply to EmailBot in the discord server')
+        msg['Subject'] = 'Verification code for Baobaomen discord'
+        msg['From'] = user_email
+        msg['To'] = receiver
+        sv.sendmail(user_email, receiver, msg.as_string())
+
 intents = discord.Intents.default()
 intents.members = True
 
@@ -184,19 +203,23 @@ async def on_message(message):
                     to_emails=message_content,
                     subject='Verify your server email',
                     html_content=str(random_code))
-                try:
-                    sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
-                    response = sg.send(emailmessage)
-                    print(response.status_code)
-                    print(response.body)
-                    print(response.headers)
-                    await message.channel.send("Email sent. **Reply here with your verification code**. If you haven't received it, check your spam folder.")
+                try :
+                    smtp_send(message_content, random_code)
+                    print('Email sent')
                 except Exception as e:
-                    mailgun_email = mailgun_send(message_content, random_code)
-                    if mailgun_email.status_code == 200:
+                    try:
+                        sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+                        response = sg.send(emailmessage)
+                        print(response.status_code)
+                        print(response.body)
+                        print(response.headers)
                         await message.channel.send("Email sent. **Reply here with your verification code**. If you haven't received it, check your spam folder.")
-                    else:
-                        await message.channel.send("Email failed to send.")
+                    except Exception as ee:
+                        mailgun_email = mailgun_send(message_content, random_code)
+                        if mailgun_email.status_code == 200:
+                            await message.channel.send("Email sent. **Reply here with your verification code**. If you haven't received it, check your spam folder.")
+                        else:
+                            await message.channel.send("Email failed to send.")
             else:
                 await message.channel.send("Invalid email.")
         else:
