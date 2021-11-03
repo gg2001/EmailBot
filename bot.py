@@ -8,6 +8,7 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import requests
 from keep_alive import keep_alive
+import fnmatch
 
 conn = sqlite3.connect('bot.db')
 c = conn.cursor()
@@ -115,6 +116,12 @@ def mailgun_send(email_address, verification_code):
 			"subject": "Verify your server email",
 			"text": str(verification_code)})
 
+def domain_wildcard_match(domain_to_verify, domains_allowed):
+    for da in domains_allowed:
+        if fnmatch.fnmatch(domain_to_verify, da):
+            return True
+    return False
+
 intents = discord.Intents.default()
 intents.members = True
 
@@ -165,7 +172,7 @@ async def on_message(message):
                 if len(guild_domains) == 0:
                     continue
                 guild_domains = guild_domains.split('|')
-                if message_content.split("@")[1] in guild_domains:
+                if domain_wildcard_match(message_content.split("@")[1],guild_domains):
                     verif_list.append(i)
             if len(verif_list) >= 1:
                 random_code = random.randint(100000, 999999)
