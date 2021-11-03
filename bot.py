@@ -127,7 +127,7 @@ def domain_wildcard_match(domain_to_verify, domains_allowed):
 def smtp_send(email_address, verification_code):
     user_email = os.environ.get('SMTP_USER')
     smtp_server = os.environ.get('SMTP_SERVER')
-    smtp_port = os.environ.get('SMTP_PORT')
+    smtp_port = int(os.environ.get('SMTP_PORT'))
     smtp_pswd = os.environ.get('SMTP_PASSWORD')
     smtp_use_starttls = os.environ.get('SMTP_USE_STARTTLS') == 'true'
     with smtplib.SMTP(smtp_server,smtp_port) as sv:
