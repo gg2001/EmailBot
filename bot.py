@@ -181,7 +181,7 @@ async def on_member_join(member):
 class MessageCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self._cd = commands.CooldownMapping.from_cooldown(1, 15.0, commands.BucketType.member) # Change accordingly
+        self._cd = commands.CooldownMapping.from_cooldown(1, 6.0, commands.BucketType.member) # Change accordingly
                                                         # rate, per, BucketType
 
     def get_ratelimit(self, message: discord.Message) -> typing.Optional[int]:
@@ -191,8 +191,10 @@ class MessageCog(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        if message.guild:
+          return
         if message.author == client.user:
-            return
+          return
         # Getting the ratelimit left
         ratelimit = self.get_ratelimit(message)
         print(f'Rate limit: {ratelimit}')
@@ -282,7 +284,7 @@ class MessageCog(commands.Cog):
                 await message.channel.send("Incorrect code.")
         elif message.guild == None:
             await message.channel.send("Invalid email.")
-        await client.process_commands(message)
+        # await client.process_commands(message)
 
 client.add_cog(MessageCog(client))
 
@@ -361,6 +363,7 @@ async def vstatus(ctx):
             new_guild(ctx.guild.id)
         check_on_join = get_guild(ctx.guild.id)
         on_join = bool(check_on_join[2])
+        print('request vstatus')
         await ctx.send("```" +
             "Ping: " + "{0}ms".format(round(client.latency * 1000)) + "\n" +
             "User commands: " + "\n" +
@@ -408,8 +411,8 @@ async def unverify(ctx):
         guild_db = get_guild(ctx.guild.id)
         role = discord.utils.get(curr_guild.roles, name=guild_db[3])
         member = curr_guild.get_member(ctx.author.id)
-        await client.remove_roles(member, role)
-        await ctx.author.send('You have been unverified')
+        await member.remove_roles(role)
+        await ctx.author.send(f'You have been unverified on {curr_guild.name}.')
 
         
 
