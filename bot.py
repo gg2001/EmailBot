@@ -137,7 +137,7 @@ def smtp_send(email_address, verification_code):
         sv.login(user_email, smtp_pswd)
         receiver = email_address
         msg = MIMEText(f'Your verification code is {verification_code}. Please reply to EmailBot in the discord server')
-        msg['Subject'] = 'Verification code for Baobaomen discord'
+        msg['Subject'] = 'Verify your discord server email'
         msg['From'] = user_email
         msg['To'] = receiver
         sv.sendmail(user_email, receiver, msg.as_string())
