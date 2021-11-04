@@ -177,7 +177,7 @@ async def on_member_join(member):
 class MessageCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self._cd = commands.CooldownMapping.from_cooldown(1, 6.0, commands.BucketType.member) # Change accordingly
+        self._cd = commands.CooldownMapping.from_cooldown(1, 15.0, commands.BucketType.member) # Change accordingly
                                                         # rate, per, BucketType
 
     def get_ratelimit(self, message: discord.Message) -> typing.Optional[int]:
@@ -197,6 +197,7 @@ class MessageCog(commands.Cog):
             pass
         else:
             await message.channel.send("You are rate-limited. Please try again later.")
+            return
 
         message_content = message.content.strip()
         if (message.guild == None) and email_check(message_content):
