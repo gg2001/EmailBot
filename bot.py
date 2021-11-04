@@ -63,6 +63,10 @@ def verify_user(userid, guildid):
     c.execute("UPDATE users SET verified=1 WHERE userid=? AND guildid=?", (userid, guildid))
     conn.commit()
 
+def unverify_user(userid, guildid):
+    c.execute("UPDATE users SET verified=0 WHERE userid=? AND guildid=?", (userid, guildid))
+    conn.commit()
+
 def get_domains(guildid):
     return get_guild(guildid)[1]
 
@@ -391,6 +395,23 @@ async def verify(ctx):
             await ctx.author.send(verify_msg(ctx.guild, check_on_join[1]))
         elif user_prev_verify[4] == 0:
             await ctx.author.send(verify_msg(ctx.guild, check_on_join[1]))
+
+@client.command()
+async def unverify(ctx):
+    if ctx.guild:
+        check_on_join = get_guild(ctx.guild.id)
+        if check_on_join == None:
+            new_guild(ctx.guild.id)
+        unverify_user(ctx.author.id,ctx.guild.id)
+        insert_email("", ctx.author.id, ctx.guild.id)
+        curr_guild = client.get_guild(ctx.guild.id)
+        guild_db = get_guild(ctx.guild.id)
+        role = discord.utils.get(curr_guild.roles, name=guild_db[3])
+        member = curr_guild.get_member(ctx.author.id)
+        await client.remove_roles(member, role)
+        await ctx.author.send('You have been unverified')
+
+        
 
 keep_alive()
 client.run(os.environ.get('DISCORD_TOKEN'))
