@@ -218,6 +218,7 @@ class MessageCog(commands.Cog):
                     try :
                         smtp_send(message_content, random_code)
                         print('Email sent')
+                        await message.channel.send("Email sent. **Reply here with your verification code**. If you haven't received it, check your spam folder.")
                     except Exception as e:
                         try:
                             sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
