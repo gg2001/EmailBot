@@ -186,7 +186,7 @@ class MessageCog(commands.Cog):
         return bucket.update_rate_limit()
 
     @commands.Cog.listener()
-    async def on_message(message):
+    async def on_message(self, message):
         if message.author == client.user:
             return
         message_content = message.content.strip()
