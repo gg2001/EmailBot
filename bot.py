@@ -189,6 +189,15 @@ class MessageCog(commands.Cog):
     async def on_message(self, message):
         if message.author == client.user:
             return
+        # Getting the ratelimit left
+        ratelimit = self.get_ratelimit(message)
+        print(f'Rate limit: {ratelimit}')
+        if ratelimit is None:
+            # The user is not ratelimited, you can add the XP or level up the user here
+            pass
+        else:
+            await message.channel.send("You are rate-limited. Please try again later.")
+
         message_content = message.content.strip()
         if (message.guild == None) and email_check(message_content):
             users_guilds = get_users_guilds(message.author.id)
