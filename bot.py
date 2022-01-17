@@ -3,11 +3,11 @@ from discord.ext import commands
 import sqlite3
 import re
 import os
-import random
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import requests
 from keep_alive import keep_alive
+import secrets
 
 conn = sqlite3.connect('bot.db')
 c = conn.cursor()
@@ -168,7 +168,7 @@ async def on_message(message):
                 if message_content.split("@")[1] in guild_domains:
                     verif_list.append(i)
             if len(verif_list) >= 1:
-                random_code = random.randint(100000, 999999)
+                random_code = secrets.randbelow(900000) + 100000
                 for i in verif_list:
                     insert_code(random_code, message.author.id, i)
                     insert_email(message_content, message.author.id, i)
