@@ -1,3 +1,4 @@
+import typing
 import discord
 from discord.ext import commands
 import sqlite3
@@ -8,6 +9,9 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import requests
 from keep_alive import keep_alive
+import fnmatch
+import smtplib
+from email.mime.text import MIMEText
 
 conn = sqlite3.connect('bot.db')
 c = conn.cursor()
@@ -57,6 +61,10 @@ def new_user(userid, guildid, email="", code=0, verified=0):
 
 def verify_user(userid, guildid):
     c.execute("UPDATE users SET verified=1 WHERE userid=? AND guildid=?", (userid, guildid))
+    conn.commit()
+
+def unverify_user(userid, guildid):
+    c.execute("UPDATE users SET verified=0 WHERE userid=? AND guildid=?", (userid, guildid))
     conn.commit()
 
 def get_domains(guildid):
@@ -115,6 +123,29 @@ def mailgun_send(email_address, verification_code):
 			"subject": "Verify your server email",
 			"text": str(verification_code)})
 
+def domain_wildcard_match(domain_to_verify, domains_allowed):
+    for da in domains_allowed:
+        if fnmatch.fnmatch(domain_to_verify, da):
+            return True
+    return False
+
+def smtp_send(email_address, verification_code):
+    user_email = os.environ.get('SMTP_USER')
+    smtp_server = os.environ.get('SMTP_SERVER')
+    smtp_port = int(os.environ.get('SMTP_PORT'))
+    smtp_pswd = os.environ.get('SMTP_PASSWORD')
+    smtp_use_starttls = os.environ.get('SMTP_USE_STARTTLS') == 'true'
+    with smtplib.SMTP(smtp_server,smtp_port) as sv:
+        if smtp_use_starttls:
+            sv.starttls()
+        sv.login(user_email, smtp_pswd)
+        receiver = email_address
+        msg = MIMEText(f'Your verification code is {verification_code}. Please reply to EmailBot in the discord server')
+        msg['Subject'] = 'Verify your discord server email'
+        msg['From'] = user_email
+        msg['To'] = receiver
+        sv.sendmail(user_email, receiver, msg.as_string())
+
 intents = discord.Intents.default()
 intents.members = True
 
@@ -147,85 +178,115 @@ async def on_member_join(member):
                 role = discord.utils.get(member.guild.roles, name=check_on_join[3])
                 await member.add_roles(role)
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-    message_content = message.content.strip()
-    if (message.guild == None) and email_check(message_content):
-        users_guilds = get_users_guilds(message.author.id)
-        if len(users_guilds) >= 1:
-            guild_list = [i[1] for i in users_guilds if i[4] == 0]
-            verif_list = []
-            for i in guild_list:
-                email_guild = get_emails_guilds(i, message_content)
-                if len(email_guild) > 0:
-                    continue
-                guild_domains = get_domains(i)
-                if len(guild_domains) == 0:
-                    continue
-                guild_domains = guild_domains.split('|')
-                if message_content.split("@")[1] in guild_domains:
-                    verif_list.append(i)
-            if len(verif_list) >= 1:
-                random_code = random.randint(100000, 999999)
-                for i in verif_list:
-                    insert_code(random_code, message.author.id, i)
-                    insert_email(message_content, message.author.id, i)
-                emailmessage = Mail(
-                    from_email=os.environ.get('SENDGRID_EMAIL'),
-                    to_emails=message_content,
-                    subject='Verify your server email',
-                    html_content=str(random_code))
-                try:
-                    sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
-                    response = sg.send(emailmessage)
-                    print(response.status_code)
-                    print(response.body)
-                    print(response.headers)
-                    await message.channel.send("Email sent. **Reply here with your verification code**. If you haven't received it, check your spam folder.")
-                except Exception as e:
-                    mailgun_email = mailgun_send(message_content, random_code)
-                    if mailgun_email.status_code == 200:
+class MessageCog(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+        self._cd = commands.CooldownMapping.from_cooldown(1, 6.0, commands.BucketType.member) # Change accordingly
+                                                        # rate, per, BucketType
+
+    def get_ratelimit(self, message: discord.Message) -> typing.Optional[int]:
+        """Returns the ratelimit left"""
+        bucket = self._cd.get_bucket(message)
+        return bucket.update_rate_limit()
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.guild:
+          return
+        if message.author == client.user:
+          return
+        # Getting the ratelimit left
+        ratelimit = self.get_ratelimit(message)
+        print(f'Rate limit: {ratelimit}')
+        if ratelimit is None:
+            # The user is not ratelimited, you can add the XP or level up the user here
+            pass
+        else:
+            await message.channel.send("You are rate-limited. Please try again later.")
+            return
+
+        message_content = message.content.strip()
+        if (message.guild == None) and email_check(message_content):
+            users_guilds = get_users_guilds(message.author.id)
+            if len(users_guilds) >= 1:
+                guild_list = [i[1] for i in users_guilds if i[4] == 0]
+                verif_list = []
+                for i in guild_list:
+                    email_guild = get_emails_guilds(i, message_content)
+                    if len(email_guild) > 0:
+                        continue
+                    guild_domains = get_domains(i)
+                    if len(guild_domains) == 0:
+                        continue
+                    guild_domains = guild_domains.split('|')
+                    if domain_wildcard_match(message_content.split("@")[1],guild_domains):
+                        verif_list.append(i)
+                if len(verif_list) >= 1:
+                    random_code = random.randint(100000, 999999)
+                    for i in verif_list:
+                        insert_code(random_code, message.author.id, i)
+                        insert_email(message_content, message.author.id, i)
+                    emailmessage = Mail(
+                        from_email=os.environ.get('SENDGRID_EMAIL'),
+                        to_emails=message_content,
+                        subject='Verify your server email',
+                        html_content=str(random_code))
+                    try :
+                        smtp_send(message_content, random_code)
+                        print('Email sent')
                         await message.channel.send("Email sent. **Reply here with your verification code**. If you haven't received it, check your spam folder.")
-                    else:
-                        await message.channel.send("Email failed to send.")
-            else:
-                await message.channel.send("Invalid email.")
-        else:
-            await message.channel.send("You have not joined a server.")
-    elif (len(message_content) == 6) and message_content.isdigit():
-        verif_code = int(message_content)
-        prev_codes_f = get_users_codes(message.author.id, verif_code)
-        prev_codes_g = [i for i in prev_codes_f if i[4] == 0]
-        prev_codes = []
-        for i in prev_codes_g:
-            user_emails = get_emails_guilds(i[1], i[2])
-            if len(user_emails) >= 1:
-                continue
-            else:
-                prev_codes.append(i)
-        if len(prev_codes) >= 1:
-            for i in prev_codes:
-                verify_user(message.author.id, i[1])
-                curr_guild = client.get_guild(i[1])
-                guild_db = get_guild(i[1])
-                role = discord.utils.get(curr_guild.roles, name=guild_db[3])
-                if role:
-                    member = curr_guild.get_member(message.author.id)
-                    if role not in member.roles:
-                        await member.add_roles(role)
+                    except Exception as e:
+                        try:
+                            sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+                            response = sg.send(emailmessage)
+                            print(response.status_code)
+                            print(response.body)
+                            print(response.headers)
+                            await message.channel.send("Email sent. **Reply here with your verification code**. If you haven't received it, check your spam folder.")
+                        except Exception as ee:
+                            mailgun_email = mailgun_send(message_content, random_code)
+                            if mailgun_email.status_code == 200:
+                                await message.channel.send("Email sent. **Reply here with your verification code**. If you haven't received it, check your spam folder.")
+                            else:
+                                await message.channel.send("Email failed to send.")
                 else:
-                    await curr_guild.create_role(name=guild_db[3])
+                    await message.channel.send("Invalid email.")
+            else:
+                await message.channel.send("You have not joined a server.")
+        elif (len(message_content) == 6) and message_content.isdigit():
+            verif_code = int(message_content)
+            prev_codes_f = get_users_codes(message.author.id, verif_code)
+            prev_codes_g = [i for i in prev_codes_f if i[4] == 0]
+            prev_codes = []
+            for i in prev_codes_g:
+                user_emails = get_emails_guilds(i[1], i[2])
+                if len(user_emails) >= 1:
+                    continue
+                else:
+                    prev_codes.append(i)
+            if len(prev_codes) >= 1:
+                for i in prev_codes:
+                    verify_user(message.author.id, i[1])
+                    curr_guild = client.get_guild(i[1])
+                    guild_db = get_guild(i[1])
                     role = discord.utils.get(curr_guild.roles, name=guild_db[3])
-                    member = curr_guild.get_member(message.author.id)
-                    await member.add_roles(role)
-                await message.channel.send("You have been verified on " + client.get_guild(i[1]).name + ".")
-        else:
-            await message.channel.send("Incorrect code.")
-    elif message.guild == None:
-        await message.channel.send("Invalid email.")
-    await client.process_commands(message)
+                    if role:
+                        member = curr_guild.get_member(message.author.id)
+                        if role not in member.roles:
+                            await member.add_roles(role)
+                    else:
+                        await curr_guild.create_role(name=guild_db[3])
+                        role = discord.utils.get(curr_guild.roles, name=guild_db[3])
+                        member = curr_guild.get_member(message.author.id)
+                        await member.add_roles(role)
+                    await message.channel.send("You have been verified on " + client.get_guild(i[1]).name + ".")
+            else:
+                await message.channel.send("Incorrect code.")
+        elif message.guild == None:
+            await message.channel.send("Invalid email.")
+        # await client.process_commands(message)
+
+client.add_cog(MessageCog(client))
 
 @client.event
 async def on_guild_join(guild):
@@ -302,6 +363,7 @@ async def vstatus(ctx):
             new_guild(ctx.guild.id)
         check_on_join = get_guild(ctx.guild.id)
         on_join = bool(check_on_join[2])
+        print('request vstatus')
         await ctx.send("```" +
             "Ping: " + "{0}ms".format(round(client.latency * 1000)) + "\n" +
             "User commands: " + "\n" +
@@ -336,6 +398,23 @@ async def verify(ctx):
             await ctx.author.send(verify_msg(ctx.guild, check_on_join[1]))
         elif user_prev_verify[4] == 0:
             await ctx.author.send(verify_msg(ctx.guild, check_on_join[1]))
+
+@client.command()
+async def unverify(ctx):
+    if ctx.guild:
+        check_on_join = get_guild(ctx.guild.id)
+        if check_on_join == None:
+            new_guild(ctx.guild.id)
+        unverify_user(ctx.author.id,ctx.guild.id)
+        insert_email("", ctx.author.id, ctx.guild.id)
+        curr_guild = client.get_guild(ctx.guild.id)
+        guild_db = get_guild(ctx.guild.id)
+        role = discord.utils.get(curr_guild.roles, name=guild_db[3])
+        member = curr_guild.get_member(ctx.author.id)
+        await member.remove_roles(role)
+        await ctx.author.send(f'You have been unverified on {curr_guild.name}.')
+
+        
 
 keep_alive()
 client.run(os.environ.get('DISCORD_TOKEN'))

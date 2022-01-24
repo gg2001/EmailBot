@@ -1,23 +1,12 @@
-<p align="center">
-  <img src="docs/emailbot.png" />
-</p>
-
-**EmailBot** allows you to verify that your Discord server members have an email address with a specific domain.
-
-[![Discord](https://img.shields.io/discord/731028346569228288)](https://discord.gg/MfFMxu9) [![License](https://img.shields.io/badge/license-GPL-brightgreen)](LICENSE)
-
-> Invite: https://discord.com/api/oauth2/authorize?client_id=731027450607435846&permissions=268503040&scope=bot
-
-> Discord server: https://discord.gg/MfFMxu9
-
 ## Usage
 
-After [inviting](https://discord.com/api/oauth2/authorize?client_id=731027450607435846&permissions=268503040&scope=bot) the bot to your server, a domain must be added using `.dominadd domain`. `.vstatus` is the help command:
+After inviting the bot to your server, a domain must be added using `.dominadd domain`. `.vstatus` is the help command:
 
 ```
 User commands: 
    .verify -> Sends a DM to the user to verify their email
    .vstatus -> This help message
+   .unverify -> unverify self
 
 Admin commands: 
  - A domain must be added before users can be verified.
@@ -35,7 +24,7 @@ Verified role (default=Verified): Verified
 
 ## Example
 
-Let's say you want a Discord server just for people who have a @randomuniversity.edu email address. Add this bot to your server and when someone joins, they will get a DM asking for their @randomuniversity.edu email address. The bot then emails them a verification code. If they reply with the correct code, they get the "Verified" role.
+Let's say you want a Discord server just for people who have a @randomuniversity.edu email address. Add this bot to your server and when someone joins, they will get a DM asking for their @randomuniversity.edu email address. The bot then emails them a verification code. If they reply with the correct code, they get the "Verified" role. Wildcard can be used for email domain, such as *.randomuniversity.edu
 
 <p align="center">
   <img src="docs/screenshot.png" />
@@ -51,12 +40,18 @@ pip install -r requirements.txt
 
 Before running it make sure these environment variables are set. You will need a [Sendgrid](https://sendgrid.com/docs/for-developers/sending-email/api-getting-started/) and [Discord](https://discordpy.readthedocs.io/en/latest/discord.html#discord-intro) account (both are free). Optionally consider making a [Mailgun](https://documentation.mailgun.com/en/latest/quickstart-sending.html#how-to-start-sending-email) account, since this bot uses Mailgun when Sendgrid fails to send an email:
 
+SMTP will be used first, if failed, Sendgrid, if failed again, Mailgun. Set SMTP_USE_STARTTLS to 'true' if using STARTTLS
 ```
 export SENDGRID_API_KEY='YOUR_SENDGRID_API_KEY'
 export SENDGRID_EMAIL='YOUR_SENDGRID_EMAIL'
 export DISCORD_TOKEN='YOUR_DISCORD_TOKEN'
 export MAILGUN_API_KEY='YOUR_MAILGUN_API_KEY'
 export MAILGUN_DOMAIN='YOUR_MAILGUN_DOMAIN'
+export 'SMTP_USER'='YOUR_SMTP_EMAIL_ADDRESS'
+export 'SMTP_SERVER'='YOUR_SMTP_SERVER'
+export 'SMTP_PORT'='YOUR_SMTP_SERVER_PORT'
+export 'SMTP_PASSWORD'='YOUR_SMTP_PASSWORD'
+export 'SMTP_USE_STARTTLS'='true'
 ```
 
 Run the bot with:
