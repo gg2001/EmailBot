@@ -1,23 +1,12 @@
-<p align="center">
-  <img src="docs/emailbot.png" />
-</p>
-
-**EmailBot** allows you to verify that your Discord server members have an email address with a specific domain.
-
-[![Discord](https://img.shields.io/discord/731028346569228288)](https://discord.gg/MfFMxu9) [![License](https://img.shields.io/badge/license-GPL-brightgreen)](LICENSE)
-
-> Invite: https://discord.com/api/oauth2/authorize?client_id=731027450607435846&permissions=268503040&scope=bot
-
-> Discord server: https://discord.gg/MfFMxu9
-
 ## Usage
 
-After [inviting](https://discord.com/api/oauth2/authorize?client_id=731027450607435846&permissions=268503040&scope=bot) the bot to your server, a domain must be added using `.dominadd domain`. `.vstatus` is the help command:
+After inviting the bot to your server, a domain must be added using `.dominadd domain`. `.vstatus` is the help command:
 
 ```
 User commands: 
    .verify -> Sends a DM to the user to verify their email
    .vstatus -> This help message
+   .unverify -> unverify self
 
 Admin commands: 
  - A domain must be added before users can be verified.
@@ -35,7 +24,7 @@ Verified role (default=Verified): Verified
 
 ## Example
 
-Let's say you want a Discord server just for people who have a @randomuniversity.edu email address. Add this bot to your server and when someone joins, they will get a DM asking for their @randomuniversity.edu email address. The bot then emails them a verification code. If they reply with the correct code, they get the "Verified" role.
+Let's say you want a Discord server just for people who have a @randomuniversity.edu email address. Add this bot to your server and when someone joins, they will get a DM asking for their @randomuniversity.edu email address. The bot then emails them a verification code. If they reply with the correct code, they get the "Verified" role. Wildcard can be used for email domain, such as *.randomuniversity.edu
 
 <p align="center">
   <img src="docs/screenshot.png" />
