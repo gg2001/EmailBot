@@ -10,6 +10,10 @@
 
 > Discord server: https://discord.gg/MfFMxu9
 
+## P.S. 
+
+I just fixed this as their a user bypass vulnerability available in the orginal and they won't fix even though I PR'd :/
+
 ## Usage
 
 After [inviting](https://discord.com/api/oauth2/authorize?client_id=731027450607435846&permissions=268503040&scope=bot) the bot to your server, a domain must be added using `.dominadd domain`. `.vstatus` is the help command:
