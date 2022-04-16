@@ -167,8 +167,6 @@ async def on_message(message):
                 guild_domains = guild_domains.split('|')
                 if message_content.split("@")[-1] in guild_domains:
                     verif_list.append(i)
-		print(verif_list)
-		print(i)
             if len(verif_list) >= 1:
                 random_code = random.randint(100000, 999999)
                 for i in verif_list:
@@ -179,7 +177,6 @@ async def on_message(message):
                     to_emails=message_content,
                     subject='Verify your server email',
                     html_content=str(random_code))
-		print(os.environ.get('SENDGRID_EMAIL'))
                 try:
                     sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
                     response = sg.send(emailmessage)
