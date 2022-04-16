@@ -123,7 +123,7 @@ client = commands.Bot(command_prefix = '?', intents=intents)
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
-    await client.change_presence(activity=discord.Game(name='.vstatus | github.com/gg2001/EmailBot'))
+    await client.change_presence(activity=discord.Game(name='?vstatus | Whitehatters are cool'))
 
 @client.event
 async def on_member_join(member):
@@ -165,8 +165,10 @@ async def on_message(message):
                 if len(guild_domains) == 0:
                     continue
                 guild_domains = guild_domains.split('|')
-                if message_content.split("@")[1] in guild_domains:
+                if message_content.split("@")[-1] in guild_domains:
                     verif_list.append(i)
+		print(verif_list)
+		print(i)
             if len(verif_list) >= 1:
                 random_code = random.randint(100000, 999999)
                 for i in verif_list:
@@ -177,6 +179,7 @@ async def on_message(message):
                     to_emails=message_content,
                     subject='Verify your server email',
                     html_content=str(random_code))
+		print(os.environ.get('SENDGRID_EMAIL'))
                 try:
                     sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
                     response = sg.send(emailmessage)
