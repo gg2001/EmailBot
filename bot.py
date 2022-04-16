@@ -165,9 +165,6 @@ async def on_message(message):
                 if len(guild_domains) == 0:
                     continue
                 guild_domains = guild_domains.split('|')
-                counter = message_content.count('@')
-                if counter == 1:
-                    continue
                 if message_content.split("@")[-1] in guild_domains:
                     verif_list.append(i)
             if len(verif_list) >= 1:
