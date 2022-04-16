@@ -118,7 +118,7 @@ def mailgun_send(email_address, verification_code):
 intents = discord.Intents.default()
 intents.members = True
 
-client = commands.Bot(command_prefix = '.', intents=intents)
+client = commands.Bot(command_prefix = '?', intents=intents)
 
 @client.event
 async def on_ready():
