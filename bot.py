@@ -165,7 +165,7 @@ async def on_message(message):
                 if len(guild_domains) == 0:
                     continue
                 guild_domains = guild_domains.split('|')
-                if message_content.split("@")[-1] in guild_domains:
+                if message_content.split("@")[1] in guild_domains:
                     verif_list.append(i)
             if len(verif_list) >= 1:
                 random_code = random.randint(100000, 999999)
